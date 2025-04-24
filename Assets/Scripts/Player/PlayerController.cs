@@ -11,9 +11,13 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Transform hookAttachPoint;
     [SerializeField] private float maxCastPower = 10f;
     [SerializeField] private float castPowerIncreaseRate = 5f;
+    [SerializeField] private int hookLevel = 1; // For upgrade system
+
+    // Add property for hook level
+    public int HookLevel => hookLevel;
 
     // States
-    private bool isFishing = false;
+    public bool isFishing = false;
     private bool isChargingCast = false;
     private float currentCastPower = 0f;
 
@@ -25,7 +29,7 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-        //animator = GetComponent<Animator>();
+        animator = GetComponent<Animator>();
     }
 
     private void Update()
@@ -43,8 +47,17 @@ public class PlayerController : MonoBehaviour
             clampedPosition.x = Mathf.Clamp(clampedPosition.x, -boundaries, boundaries);
             transform.position = clampedPosition;
 
-            // Update animation
-            animator?.SetFloat("Speed", Mathf.Abs(horizontalInput));
+            if (Mathf.Abs(horizontalInput) != 0)
+            {
+                // Update animation
+                animator?.SetFloat("Speed", Mathf.Abs(horizontalInput));
+            }
+            else
+            {
+                animator?.SetFloat("Speed", 0);
+            }
+
+            //Debug.Log(Input.GetAxis("Horizontal"));
 
             // Flip sprite based on direction
             if (horizontalInput != 0)
@@ -94,14 +107,13 @@ public class PlayerController : MonoBehaviour
         isFishing = true;
         rb.velocity = Vector2.zero; // Stop movement
         animator?.SetBool("IsFishing", true);
-
         // Instantiate hook
         GameObject hookObj = Instantiate(hookPrefab, hookAttachPoint.position, Quaternion.identity);
         currentHook = hookObj.GetComponent<FishingHook>();
 
         if (currentHook != null)
         {
-            currentHook.Initialize(this, currentCastPower);
+            currentHook.Initialize(this, hookAttachPoint, currentCastPower);
         }
     }
 

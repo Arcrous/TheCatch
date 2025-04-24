@@ -121,7 +121,133 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: Fisherman_hook_0
+      rect:
+        serializedVersion: 2
+        x: 9
+        y: 0
+        width: 35
+        height: 45
+      alignment: 9
+      pivot: {x: 0.2, y: 0.48}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0e57eaa0bdf62314dacb382543446dbc
+      internalID: -1678473442
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fisherman_hook_1
+      rect:
+        serializedVersion: 2
+        x: 57
+        y: 0
+        width: 35
+        height: 45
+      alignment: 9
+      pivot: {x: 0.2, y: 0.48}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 93721d2f128e35f41a455a4bdddbe3ab
+      internalID: 956459916
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fisherman_hook_2
+      rect:
+        serializedVersion: 2
+        x: 105
+        y: 0
+        width: 35
+        height: 45
+      alignment: 9
+      pivot: {x: 0.2, y: 0.48}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4637b9c39edd87746a94378487e9802d
+      internalID: 851106571
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fisherman_hook_3
+      rect:
+        serializedVersion: 2
+        x: 152
+        y: 0
+        width: 38
+        height: 45
+      alignment: 9
+      pivot: {x: 0.21, y: 0.48}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3ef9e5f2d97e2bb4a8e9a6f322b2489c
+      internalID: -292278438
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fisherman_hook_4
+      rect:
+        serializedVersion: 2
+        x: 200
+        y: 0
+        width: 38
+        height: 45
+      alignment: 9
+      pivot: {x: 0.21, y: 0.48}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3bbc34cfc1f6fef47838003abbc15f87
+      internalID: 457519571
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fisherman_hook_5
+      rect:
+        serializedVersion: 2
+        x: 245
+        y: 0
+        width: 28
+        height: 45
+      alignment: 9
+      pivot: {x: 0.4, y: 0.48}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 34678a86d97c600458f8cc819b104862
+      internalID: -67947918
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -132,7 +258,13 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Fisherman_hook_0: -1678473442
+      Fisherman_hook_1: 956459916
+      Fisherman_hook_2: 851106571
+      Fisherman_hook_3: -292278438
+      Fisherman_hook_4: 457519571
+      Fisherman_hook_5: -67947918
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
