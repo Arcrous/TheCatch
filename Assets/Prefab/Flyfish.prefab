@@ -9,11 +9,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3477257493875087761}
+  - component: {fileID: -9103233227321376991}
   - component: {fileID: 5775723549516929761}
   - component: {fileID: 6439976624446755397}
   - component: {fileID: 5071316606063019250}
   - component: {fileID: 3094716591338672462}
-  - component: {fileID: -9103233227321376991}
   - component: {fileID: -3836143567228826341}
   m_Layer: 6
   m_Name: Flyfish
@@ -35,8 +35,36 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-9103233227321376991
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9206808987252064787}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fa13b9a615e1ce48bf483a481ddb288, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fishData: {fileID: 11400000, guid: 7227c1008fcf08d4cbe68cf340f3556b, type: 2}
+  minimumHookLevel: 1
+  swimSpeed: 2
+  changeDirectionTime: 3
+  patrolRadius: 3
+  minX: -10.05
+  maxX: 98.1
+  minY: -2.95
+  maxY: 3.35
+  lifetime: 0
+  maxLifetime: 60
+  isInCameraView: 0
+  gameCamera: {fileID: 0}
+  glowEffect: {fileID: 4901735838176742358, guid: 48b96f4edbb208b47a8f893e6838d56e, type: 3}
+  specialGlowColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  pulseSpeed: 1.5
 --- !u!212 &5775723549516929761
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -188,30 +216,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &-9103233227321376991
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9206808987252064787}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1fa13b9a615e1ce48bf483a481ddb288, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fishData: {fileID: 11400000, guid: 7227c1008fcf08d4cbe68cf340f3556b, type: 2}
-  minimumHookLevel: 1
-  swimSpeed: 2
-  changeDirectionTime: 3
-  patrolRadius: 3
-  minX: 19.7
-  maxX: 56.62
-  minY: -2.95
-  maxY: 3.35
-  glowEffect: {fileID: 4901735838176742358, guid: 48b96f4edbb208b47a8f893e6838d56e, type: 3}
-  specialGlowColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  pulseSpeed: 1.5
 --- !u!114 &-3836143567228826341
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -224,4 +228,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: afc1e6c907c8538458bfa5af15d667df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  offCameraMaxTime: 30

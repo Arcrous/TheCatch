@@ -9,11 +9,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2046576704665747429}
+  - component: {fileID: 4273278264925893280}
   - component: {fileID: 2339519268841246198}
   - component: {fileID: 1150444855898643136}
   - component: {fileID: 1056337406853376692}
   - component: {fileID: 6647944486880383541}
-  - component: {fileID: 4273278264925893280}
   - component: {fileID: -5284961933380160369}
   m_Layer: 6
   m_Name: Eel
@@ -35,8 +35,37 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4273278264925893280
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7407360009348828483}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f827e54f7c941de4fbf569f5383d6813, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fishData: {fileID: 11400000, guid: 17b2dce11db921242bee83db9cbfa2a3, type: 2}
+  minimumHookLevel: 1
+  swimSpeed: 2
+  changeDirectionTime: 3
+  patrolRadius: 3
+  minX: -9.87
+  maxX: 98
+  minY: -2.87
+  maxY: 2.63
+  lifetime: 0
+  maxLifetime: 60
+  isInCameraView: 0
+  gameCamera: {fileID: 0}
+  detectionRadius: 4
+  attackCooldown: 3
+  attackDamage: 0.2
+  attackEffect: {fileID: 0}
 --- !u!212 &2339519268841246198
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -186,31 +215,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &4273278264925893280
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7407360009348828483}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f827e54f7c941de4fbf569f5383d6813, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fishData: {fileID: 11400000, guid: 17b2dce11db921242bee83db9cbfa2a3, type: 2}
-  minimumHookLevel: 1
-  swimSpeed: 2
-  changeDirectionTime: 3
-  patrolRadius: 3
-  minX: -10.42
-  maxX: 57.48
-  minY: -2.87
-  maxY: 2.63
-  detectionRadius: 4
-  attackCooldown: 3
-  attackDamage: 0.2
-  attackEffect: {fileID: 0}
 --- !u!114 &-5284961933380160369
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -223,4 +227,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: afc1e6c907c8538458bfa5af15d667df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  offCameraMaxTime: 30

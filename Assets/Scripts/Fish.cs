@@ -30,6 +30,13 @@ public class Fish : MonoBehaviour
     protected bool isCaught = false;
     protected float distanceThreshold = 0.5f; // How close to target before picking new one
 
+    [Header("Lifetime")]
+    // Add these fields at the top with other protected fields
+    [SerializeField] protected float lifetime = 0f;
+    [SerializeField] protected float maxLifetime = 60f; // 2 minutes default lifetime
+    [SerializeField] protected bool isInCameraView = false;
+    [SerializeField] protected Camera gameCamera;
+
     // Static variables to track all fish positions
     private static int fishCount = 0;
     private int fishID;
@@ -66,6 +73,10 @@ public class Fish : MonoBehaviour
 
         // Randomize direction change timer
         directionChangeTimer = changeDirectionTime * Random.Range(0.8f, 1.2f);
+
+        // Get the main camera if not assigned
+        if (gameCamera == null)
+            gameCamera = Camera.main;
     }
 
     // Force each fish to a different part of the screen
@@ -98,9 +109,35 @@ public class Fish : MonoBehaviour
         transform.position = new Vector3(randomX, randomY, 0);
     }
 
+    protected virtual void Update()
+    {
+        if (gameCamera != null && spriteRenderer != null)
+        {
+            Vector3 viewportPoint = gameCamera.WorldToViewportPoint(transform.position);
+            isInCameraView = (viewportPoint.x > 0 && viewportPoint.x < 1 &&
+                             viewportPoint.y > 0 && viewportPoint.y < 1 &&
+                             viewportPoint.z > 0);
+
+            if (lifetime > maxLifetime)
+            {
+                //Debug.Log($"Fish {fishID} - in camera: {isInCameraView}, lifetime: {lifetime:F1}");
+            }
+        }
+    }
+
     protected virtual void FixedUpdate()
     {
         if (isCaught) return;
+
+        // Update lifetime and check for despawn
+        lifetime += Time.fixedDeltaTime;
+        if (lifetime > maxLifetime && !isInCameraView && !isCaught)
+        {
+            // Notify spawner before destroying
+            FindObjectOfType<FishSpawner>()?.OnFishDespawned();
+            Destroy(gameObject);
+            return;
+        }
 
         // Check if we've reached the target
         float distanceToTarget = Vector2.Distance(rb.position, targetPosition);
@@ -248,6 +285,13 @@ public class Fish : MonoBehaviour
             // Draw patrol radius
             Gizmos.color = new Color(0, 1, 0, 0.2f); // Semi-transparent green
             Gizmos.DrawWireSphere(spawnPosition, patrolRadius);
+
+            // Draw camera view status
+            Color statusColor = isInCameraView ? Color.green : Color.red;
+            UnityEditor.Handles.Label(transform.position + Vector3.up * 0.7f,
+                $"In View: {isInCameraView}");
+            Gizmos.color = statusColor;
+            Gizmos.DrawWireSphere(transform.position, 0.2f);
         }
 
         // Draw boundaries of allowed movement area
@@ -263,6 +307,40 @@ public class Fish : MonoBehaviour
             0
         );
         Gizmos.DrawWireCube(centerPoint, size);
+
+        // Draw depth range if fishData is available
+        if (fishData != null)
+        {
+            Gizmos.color = new Color(0, 0.5f, 1f, 0.4f); // Semi-transparent light blue
+                                                         // Draw min depth line
+            Vector3 minDepthStart = new Vector3(minX, fishData.depthRange.x, 0);
+            Vector3 minDepthEnd = new Vector3(maxX, fishData.depthRange.x, 0);
+            Gizmos.DrawLine(minDepthStart, minDepthEnd);
+
+            // Draw max depth line
+            Vector3 maxDepthStart = new Vector3(minX, fishData.depthRange.y, 0);
+            Vector3 maxDepthEnd = new Vector3(maxX, fishData.depthRange.y, 0);
+            Gizmos.DrawLine(maxDepthStart, maxDepthEnd);
+
+            // Draw filled area between depth ranges
+            Vector3[] vertices = new Vector3[] {
+            minDepthStart,
+            minDepthEnd,
+            maxDepthEnd,
+            maxDepthStart
+        };
+            Gizmos.DrawSphere(vertices[0], 0.2f); // Visualize corners
+            Gizmos.DrawSphere(vertices[1], 0.2f);
+            Gizmos.DrawSphere(vertices[2], 0.2f);
+            Gizmos.DrawSphere(vertices[3], 0.2f);
+
+            // Add depth labels
+            UnityEditor.Handles.color = new Color(0, 0.5f, 1f, 1f);
+            UnityEditor.Handles.Label(minDepthStart + Vector3.left * 2f,
+                $"Min Depth: {fishData.depthRange.x}m");
+            UnityEditor.Handles.Label(maxDepthStart + Vector3.left * 2f,
+                $"Max Depth: {fishData.depthRange.y}m");
+        }
 
         // Only draw target information during play mode
         if (Application.isPlaying)
@@ -281,7 +359,7 @@ public class Fish : MonoBehaviour
             // Draw ID text
             if (fishID >= 0)
             {
-                UnityEditor.Handles.Label(transform.position + Vector3.up * 0.5f, $"Fish {fishID}");
+                UnityEditor.Handles.Label(transform.position + Vector3.up * 1.3f, $"Fish {fishID}");
             }
         }
     }

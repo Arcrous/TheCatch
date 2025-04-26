@@ -23,6 +23,7 @@ public class FishSpawner : MonoBehaviour
     [SerializeField] private float aggressiveFishChance = 0.2f;
     [SerializeField] private Vector2 spawnAreaMin = new Vector2(-8f, -15f);
     [SerializeField] private Vector2 spawnAreaMax = new Vector2(8f, -5f);
+    [SerializeField] private float minDistanceBetweenFish = 3f;
 
     private float spawnTimer;
     private List<GameObject> activeFish = new List<GameObject>();
@@ -38,6 +39,12 @@ public class FishSpawner : MonoBehaviour
         }
     }
 
+    // Add this method to handle fish despawn notification
+    public void OnFishDespawned()
+    {
+        spawnTimer = 0; // Trigger immediate respawn attempt
+    }
+
     private void FixedUpdate()
     {
         // Clean up list of destroyed fish
@@ -47,12 +54,18 @@ public class FishSpawner : MonoBehaviour
         spawnTimer -= Time.deltaTime;
         if (spawnTimer <= 0 && activeFish.Count < maxFishCount)
         {
-            SpawnRandomFish();
-            spawnTimer = spawnInterval;
+            if (SpawnRandomFish())
+            {
+                spawnTimer = spawnInterval;
+            }
+            else
+            {
+                spawnTimer = 0.5f; // Try again soon if spawn failed
+            }
         }
     }
 
-    private void SpawnRandomFish()
+    private bool SpawnRandomFish()
     {
         // Determine fish type
         float fishTypeRoll = Random.value;
@@ -98,11 +111,38 @@ public class FishSpawner : MonoBehaviour
             }
         }
 
-        // Determine spawn position
-        Vector2 spawnPos = new Vector2(
-            Random.Range(spawnAreaMin.x, spawnAreaMax.x),
-            Random.Range(spawnAreaMin.y, spawnAreaMax.y)
-        );
+        // Try multiple spawn positions if needed
+        const int maxAttempts = 10;
+        bool validPosition = false;
+        Vector2 spawnPos = Vector2.zero;
+
+        for (int attempt = 0; attempt < maxAttempts; attempt++)
+        {
+            spawnPos = new Vector2(
+                Random.Range(spawnAreaMin.x, spawnAreaMax.x),
+                Random.Range(spawnAreaMin.y, spawnAreaMax.y)
+            );
+
+            // Check distance to other fish
+            validPosition = true;
+            foreach (GameObject existingFish in activeFish)
+            {
+                if (existingFish == null) continue;
+
+                float distance = Vector2.Distance(spawnPos, existingFish.transform.position);
+                if (distance < minDistanceBetweenFish)
+                {
+                    validPosition = false;
+                    break;
+                }
+            }
+
+            if (validPosition)
+                break;
+        }
+
+        if (!validPosition)
+            return false; // Couldn't find valid position
 
         // Spawn the fish
         GameObject newFish = Instantiate(selectedFish.fishPrefab, spawnPos, Quaternion.identity);
@@ -124,15 +164,22 @@ public class FishSpawner : MonoBehaviour
 
         // Add to active fish list
         activeFish.Add(newFish);
+        return true;
     }
 
     // For visualizing spawn area in editor
     private void OnDrawGizmosSelected()
     {
-        Gizmos.color = Color.cyan;
-        Gizmos.DrawWireCube(
-            new Vector3((spawnAreaMin.x + spawnAreaMax.x) / 2, (spawnAreaMin.y + spawnAreaMax.y) / 2, 0),
-            new Vector3(spawnAreaMax.x - spawnAreaMin.x, spawnAreaMax.y - spawnAreaMin.y, 0)
-        );
+        if (!Application.isPlaying) return;
+
+        // Draw minimum distance circles around existing fish
+        Gizmos.color = new Color(1, 1, 0, 0.2f); // Semi-transparent yellow
+        foreach (GameObject fish in activeFish)
+        {
+            if (fish != null)
+            {
+                Gizmos.DrawWireSphere(fish.transform.position, minDistanceBetweenFish);
+            }
+        }
     }
 }

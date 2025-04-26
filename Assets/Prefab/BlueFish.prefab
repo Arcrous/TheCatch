@@ -9,8 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3681397179118920653}
-  - component: {fileID: 2047916337733912448}
   - component: {fileID: 6583279135251644844}
+  - component: {fileID: 2047916337733912448}
   - component: {fileID: 8580780661527038583}
   - component: {fileID: 3494886614043137637}
   - component: {fileID: 4401271347343683849}
@@ -35,8 +35,33 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6583279135251644844
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5348358735010069822}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4077797d74ea01a42adbf1e47c5faf26, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fishData: {fileID: 11400000, guid: 8459819510caf6749963b77d9b4b28b6, type: 2}
+  minimumHookLevel: 1
+  swimSpeed: 2
+  changeDirectionTime: 5
+  patrolRadius: 3
+  minX: -10.35
+  maxX: 98.2
+  minY: -3.08
+  maxY: 5
+  lifetime: 0
+  maxLifetime: 60
+  isInCameraView: 0
+  gameCamera: {fileID: 0}
 --- !u!212 &2047916337733912448
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -89,27 +114,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &6583279135251644844
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5348358735010069822}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4077797d74ea01a42adbf1e47c5faf26, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fishData: {fileID: 11400000, guid: 8459819510caf6749963b77d9b4b28b6, type: 2}
-  minimumHookLevel: 1
-  swimSpeed: 2
-  changeDirectionTime: 5
-  patrolRadius: 3
-  minX: -11.34
-  maxX: 57.55
-  minY: -3.08
-  maxY: 5
 --- !u!95 &8580780661527038583
 Animator:
   serializedVersion: 5
@@ -220,4 +224,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: afc1e6c907c8538458bfa5af15d667df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  offCameraMaxTime: 30

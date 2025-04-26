@@ -67,8 +67,6 @@ public class PlayerController : MonoBehaviour
                 animator?.SetFloat("Speed", 0);
             }
 
-            //Debug.Log(Input.GetAxis("Horizontal"));
-
             // Flip sprite based on direction
             if (horizontalInput != 0)
             {
@@ -92,7 +90,7 @@ public class PlayerController : MonoBehaviour
                 currentCastPower = Mathf.Min(currentCastPower, maxCastPower);
 
                 // Visual feedback for charging (could be UI or animation)
-                // animator?.SetFloat("CastPower", currentCastPower / maxCastPower);
+                animator?.SetFloat("CastPower", currentCastPower / maxCastPower);
 
                 // Release cast
                 if (Input.GetKeyUp(KeyCode.Space))
@@ -143,7 +141,7 @@ public class PlayerController : MonoBehaviour
         if (caughtFish && fishCaught != null)
         {
             // Add fish to inventory
-            //InventoryManager.Instance?.AddFish(fishCaught);
+            InventoryManager.Instance?.AddFish(fishCaught);
         }
     }
 

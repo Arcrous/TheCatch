@@ -9,10 +9,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1894101594321015266}
+  - component: {fileID: 6816271898712266458}
   - component: {fileID: 3650114401241728396}
   - component: {fileID: 7695451038287582665}
   - component: {fileID: 5326283197097673837}
-  - component: {fileID: 6816271898712266458}
   - component: {fileID: 8141132903831116888}
   - component: {fileID: 3186472487970377905}
   m_Layer: 6
@@ -35,8 +35,33 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 19
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6816271898712266458
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5786608991844183611}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4077797d74ea01a42adbf1e47c5faf26, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fishData: {fileID: 11400000, guid: c02f02b0437bfd1438899e3a97e29484, type: 2}
+  minimumHookLevel: 1
+  swimSpeed: 2
+  changeDirectionTime: 3
+  patrolRadius: 3
+  minX: -10.19
+  maxX: 98.1
+  minY: -3.08
+  maxY: 5
+  lifetime: 0
+  maxLifetime: 60
+  isInCameraView: 0
+  gameCamera: {fileID: 0}
 --- !u!212 &3650114401241728396
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -165,27 +190,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 0
---- !u!114 &6816271898712266458
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5786608991844183611}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4077797d74ea01a42adbf1e47c5faf26, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fishData: {fileID: 11400000, guid: c02f02b0437bfd1438899e3a97e29484, type: 2}
-  minimumHookLevel: 1
-  swimSpeed: 2
-  changeDirectionTime: 3
-  patrolRadius: 3
-  minX: -11.34
-  maxX: 57.55
-  minY: -3.08
-  maxY: 5
 --- !u!95 &8141132903831116888
 Animator:
   serializedVersion: 5
@@ -219,4 +223,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: afc1e6c907c8538458bfa5af15d667df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  offCameraMaxTime: 30

@@ -9,12 +9,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6682483527636155664}
+  - component: {fileID: 4014206723024786565}
   - component: {fileID: 1133555530621573074}
   - component: {fileID: 6653934723937302511}
   - component: {fileID: 7734469779204443678}
   - component: {fileID: 6994153030345154022}
-  - component: {fileID: 4014206723024786565}
-  - component: {fileID: -2051393066826730912}
   m_Layer: 6
   m_Name: BrownFish
   m_TagString: Fish
@@ -35,8 +34,33 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4014206723024786565
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2496857294513772847}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4077797d74ea01a42adbf1e47c5faf26, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fishData: {fileID: 11400000, guid: 70a2823003adc0841b82e686f9cf9d1a, type: 2}
+  minimumHookLevel: 1
+  swimSpeed: 2
+  changeDirectionTime: 3
+  patrolRadius: 3
+  minX: -10.63
+  maxX: 98
+  minY: -3.08
+  maxY: 5
+  lifetime: 0
+  maxLifetime: 60
+  isInCameraView: 0
+  gameCamera: {fileID: 0}
 --- !u!212 &1133555530621573074
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -188,37 +212,3 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &4014206723024786565
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2496857294513772847}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4077797d74ea01a42adbf1e47c5faf26, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fishData: {fileID: 11400000, guid: 70a2823003adc0841b82e686f9cf9d1a, type: 2}
-  minimumHookLevel: 1
-  swimSpeed: 2
-  changeDirectionTime: 3
-  patrolRadius: 3
-  minX: -11.34
-  maxX: 57.55
-  minY: -3.08
-  maxY: 5
---- !u!114 &-2051393066826730912
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2496857294513772847}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: afc1e6c907c8538458bfa5af15d667df, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  offCameraMaxTime: 30
