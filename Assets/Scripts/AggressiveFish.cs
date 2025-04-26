@@ -11,9 +11,9 @@ public class AggressiveFish : Fish
     private bool canAttack = true;
     private float cooldownTimer = 0f;
 
-    protected override void Update()
+    protected override void FixedUpdate()
     {
-        base.Update();
+        base.FixedUpdate();
 
         if (isCaught) return;
 

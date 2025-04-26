@@ -26,9 +26,9 @@ public class SpecialFish : Fish
         }
     }
 
-    protected override void Update()
+    protected override void FixedUpdate()
     {
-        base.Update();
+        base.FixedUpdate();
 
         // Pulsing glow effect
         if (glowRenderer != null)
@@ -55,7 +55,7 @@ public class SpecialFish : Fish
         isFleeing = true;
 
         Vector2 fleeDirection = ((Vector2)transform.position - hookPosition).normalized;
-        targetPosition = (Vector2)transform.position + fleeDirection * wanderRadius * 3f;
+        targetPosition = (Vector2)transform.position + fleeDirection * 3f;
 
         // Special fish flee faster
         swimSpeed *= 2f;

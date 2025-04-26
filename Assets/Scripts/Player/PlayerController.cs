@@ -3,8 +3,12 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     [Header("Movement")]
+
+    [Range(1, 10)]
+    [SerializeField] int gameSpeed = 1;
     [SerializeField] private float moveSpeed = 5f;
-    [SerializeField] private float boundaries = 8f; // Left/right screen boundaries
+    [SerializeField] private float leftBoundary = -8f;  // Left screen boundary
+    [SerializeField] private float rightBoundary = 8f;  // Right screen boundary
 
     [Header("Fishing")]
     [SerializeField] private GameObject hookPrefab;
@@ -32,7 +36,13 @@ public class PlayerController : MonoBehaviour
         animator = GetComponent<Animator>();
     }
 
-    private void Update()
+    void Update()
+    {
+        //speed up the game
+        Time.timeScale = gameSpeed;
+    }
+
+    private void FixedUpdate()
     {
         // Handle input only if not fishing
         if (!isFishing)
@@ -44,7 +54,7 @@ public class PlayerController : MonoBehaviour
 
             // Clamp position within boundaries
             Vector3 clampedPosition = transform.position;
-            clampedPosition.x = Mathf.Clamp(clampedPosition.x, -boundaries, boundaries);
+            clampedPosition.x = Mathf.Clamp(clampedPosition.x, leftBoundary, rightBoundary);
             transform.position = clampedPosition;
 
             if (Mathf.Abs(horizontalInput) != 0)
@@ -135,5 +145,23 @@ public class PlayerController : MonoBehaviour
             // Add fish to inventory
             //InventoryManager.Instance?.AddFish(fishCaught);
         }
+    }
+
+    private void OnDrawGizmos()
+    {
+        // Draw movement boundaries
+        Gizmos.color = Color.yellow;
+
+        // Left boundary
+        Gizmos.DrawLine(
+            new Vector3(leftBoundary, transform.position.y + 5, 0),
+            new Vector3(leftBoundary, transform.position.y - 5, 0)
+        );
+
+        // Right boundary
+        Gizmos.DrawLine(
+            new Vector3(rightBoundary, transform.position.y + 5, 0),
+            new Vector3(rightBoundary, transform.position.y - 5, 0)
+        );
     }
 }

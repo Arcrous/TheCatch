@@ -38,7 +38,7 @@ public class FishSpawner : MonoBehaviour
         }
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         // Clean up list of destroyed fish
         activeFish.RemoveAll(fish => fish == null);

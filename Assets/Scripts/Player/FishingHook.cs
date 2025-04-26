@@ -26,7 +26,7 @@ public class FishingHook : MonoBehaviour
     private bool isRetracting = false;
     private bool hasCaughtFish = false;
     private FishData caughtFish;
-    //private Fish caughtFishObject;
+    private Fish caughtFishObject;
     private float retractSpeed;
     private float horizontalMovement = 0f;
 
@@ -62,7 +62,7 @@ public class FishingHook : MonoBehaviour
         }
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         UpdateLinePosition();
 
@@ -115,7 +115,6 @@ public class FishingHook : MonoBehaviour
     private void CompleteFishing()
     {
         player.OnFishingComplete(hasCaughtFish, caughtFish);
-        player.isFishing = false;
         Destroy(gameObject);
     }
 
@@ -123,7 +122,7 @@ public class FishingHook : MonoBehaviour
     {
         if (isDescending && collision.CompareTag("Fish"))
         {
-           /* Fish fish = collision.GetComponent<Fish>();
+            Fish fish = collision.GetComponent<Fish>();
             if (fish != null && !hasCaughtFish)
             {
                 // Attempt to catch fish based on hook level vs fish difficulty
@@ -139,10 +138,10 @@ public class FishingHook : MonoBehaviour
 
                     // We could add feedback here (hook wobble animation, etc)
                 }
-            }*/
+            }
         }
 
-        /*// Handle aggressive fish attacking the hook
+        // Handle aggressive fish attacking the hook
         if (collision.CompareTag("AggressiveFish"))
         {
             AggressiveFish aggressiveFish = collision.GetComponent<AggressiveFish>();
@@ -151,10 +150,10 @@ public class FishingHook : MonoBehaviour
                 aggressiveFish.AttackHook(this);
                 // This might damage the line or cause other effects
             }
-        }*/
+        }
     }
 
-   /* private void CatchFish(Fish fish)
+    private void CatchFish(Fish fish)
     {
         // Catch the fish
         hasCaughtFish = true;
@@ -180,7 +179,7 @@ public class FishingHook : MonoBehaviour
 
         // Start retracting
         StartRetracting();
-    }*/
+    }
 
     // For aggressive fish interactions
     public void DamageLine(float damageAmount)

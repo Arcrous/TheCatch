@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5cfa8076c1b11d4882920401c09edb9, type: 3}
+  m_Name: Flyfish
+  m_EditorClassIdentifier: 
+  fishName: Flyfish
+  fishSprite: {fileID: 1441689493, guid: 895f5248c0095784e9ca9753556df90e, type: 3}
+  value: 20
+  weight: 1
+  baseSpeed: 4
+  skittishness: 1.2
+  isSpecial: 1
+  isAggressive: 0
+  requiredHookLevel: 1
+  fishColor: {r: 1, g: 1, b: 1, a: 1}
+  sizeRange: {x: 0.8, y: 1.2}
+  spawnChance: 1
+  depthRange: {x: 1.4, y: -2.75}

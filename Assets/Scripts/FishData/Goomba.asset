@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5cfa8076c1b11d4882920401c09edb9, type: 3}
+  m_Name: Goomba
+  m_EditorClassIdentifier: 
+  fishName: Goomba
+  fishSprite: {fileID: -1260755021, guid: 9b285fceb15603b47b5265726b825a80, type: 3}
+  value: 60
+  weight: 15
+  baseSpeed: 5
+  skittishness: 0.1
+  isSpecial: 1
+  isAggressive: 1
+  requiredHookLevel: 3
+  fishColor: {r: 1, g: 1, b: 1, a: 1}
+  sizeRange: {x: 0.8, y: 1.2}
+  spawnChance: 0.2
+  depthRange: {x: -5, y: -15}
