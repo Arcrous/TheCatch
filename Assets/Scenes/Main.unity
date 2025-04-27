@@ -5374,7 +5374,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxInventoryCapacity: 4
-  currentMoney: 0
+  currentMoney: 1000
 --- !u!1 &872068229
 GameObject:
   m_ObjectHideFlags: 0

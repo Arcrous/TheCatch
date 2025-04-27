@@ -55,8 +55,8 @@ MonoBehaviour:
   fishingLine: {fileID: 2980574982555553059}
   hookSprite: {fileID: 7826491146169902101}
   sprites:
-  - {fileID: -27403883, guid: ca4d274a4c5042c43b9abb1f2428c86b, type: 3}
-  - {fileID: 589718711, guid: f11acb506d322a843a0240818e0c56ea, type: 3}
+  - {fileID: -1682643485, guid: f2324800edcd6d64ab350b99ee1c0914, type: 3}
+  - {fileID: -2009023622, guid: e16af6e7ffaa9734ca05bd0ac727733d, type: 3}
   - {fileID: 21300000, guid: 006c307b2cd10e3459a954e4ab481be7, type: 3}
   hookAudio: {fileID: 5537672320732220829}
   catchSound: {fileID: 0}
@@ -411,12 +411,12 @@ SpriteRenderer:
   m_SortingLayerID: -1094283175
   m_SortingLayer: 4
   m_SortingOrder: 0
-  m_Sprite: {fileID: -27403883, guid: ca4d274a4c5042c43b9abb1f2428c86b, type: 3}
+  m_Sprite: {fileID: -1682643485, guid: f2324800edcd6d64ab350b99ee1c0914, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 1
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.04, y: 0.04}
+  m_Size: {x: 0.2, y: 0.2}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
