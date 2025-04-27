@@ -19,9 +19,9 @@ MonoBehaviour:
   baseSpeed: 5
   skittishness: 0.1
   isSpecial: 1
-  isAggressive: 1
+  isAggressive: 0
   requiredHookLevel: 3
   fishColor: {r: 1, g: 1, b: 1, a: 1}
   sizeRange: {x: 0.8, y: 1.2}
   spawnChance: 0.2
-  depthRange: {x: -5, y: -15}
+  depthRange: {x: 0.92, y: -2.86}

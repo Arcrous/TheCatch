@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class FishingHook : MonoBehaviour
@@ -9,14 +10,21 @@ public class FishingHook : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private LineRenderer fishingLine;
-    [SerializeField] private SpriteRenderer hookSprite;
+    [SerializeField] public SpriteRenderer hookSprite;
+    [SerializeField] public Sprite[] sprites;
     [SerializeField] private AudioSource hookAudio;
     [SerializeField] private AudioClip catchSound;
     [SerializeField] private AudioClip splashSound;
     [SerializeField] private GameObject splashEffect;
 
+    [Header("Bait Settings")]
+    [SerializeField] private float baseAttractionRadius = 3f;
+    [SerializeField] private float attractionMultiplierPerLevel = 0.5f;
+    [SerializeField] private float attractionForce = 1f;
+    [SerializeField] private GameObject baitVisualEffect;
+
     // References
-    private PlayerController player;
+    public PlayerController player;
     private Transform hookAttachPoint;
 
     // State variables
@@ -29,6 +37,8 @@ public class FishingHook : MonoBehaviour
     private Fish caughtFishObject;
     private float retractSpeed;
     private float horizontalMovement = 0f;
+    private int baitLevel = 0;
+    private float currentAttractionRadius;
 
     public void Initialize(PlayerController playerRef, Transform attachPoint, float power)
     {
@@ -36,7 +46,31 @@ public class FishingHook : MonoBehaviour
         hookAttachPoint = attachPoint;
         startPosition = attachPoint.position;
         castPower = power;
-        retractSpeed = defaultRetractSpeed;
+
+        // Get bait level from player
+        baitLevel = player.GetBaitLevel();
+
+        // Calculate attraction radius based on bait level
+        currentAttractionRadius = baseAttractionRadius + (baseAttractionRadius * attractionMultiplierPerLevel * baitLevel);
+
+        // Scale bait visual effect based on attraction radius if it exists
+        if (baitVisualEffect != null)
+        {
+            baitVisualEffect.transform.localScale = Vector3.one * (currentAttractionRadius / baseAttractionRadius);
+
+            // Change color intensity based on bait level
+            ParticleSystem particles = baitVisualEffect.GetComponent<ParticleSystem>();
+            if (particles != null)
+            {
+                ParticleSystem.MainModule main = particles.main;
+                Color baitColor = Color.white;
+                baitColor.a = 0.2f + (0.15f * baitLevel);
+                main.startColor = baitColor;
+            }
+        }
+
+        // Use player's current reel speed instead of default
+        retractSpeed = player.GetCurrentReelSpeed();
 
         // Apply some horizontal movement based on cast power and player direction
         horizontalMovement = (player.transform.localScale.x > 0 ? 1 : -1) * (castPower * 0.1f);
@@ -69,7 +103,7 @@ public class FishingHook : MonoBehaviour
         if (isDescending)
         {
             // Move downward with some horizontal drift based on cast power
-            transform.Translate(new Vector3(horizontalMovement * Time.deltaTime, -descendSpeed * Time.deltaTime, 0));
+            transform.Translate(new Vector3(-horizontalMovement * Time.deltaTime, -descendSpeed * Time.deltaTime, 0));
 
             // Slow down horizontal movement over time
             horizontalMovement *= 0.98f;
@@ -78,6 +112,12 @@ public class FishingHook : MonoBehaviour
             if (Vector2.Distance(startPosition, transform.position) >= maxLineLength)
             {
                 StartRetracting();
+            }
+
+            // Attract nearby fish if using bait
+            if (baitLevel > 0)
+            {
+                AttractNearbyFish();
             }
         }
         else if (isRetracting)
@@ -93,6 +133,22 @@ public class FishingHook : MonoBehaviour
             if (Vector2.Distance(targetPos, transform.position) < 0.2f)
             {
                 CompleteFishing();
+            }
+        }
+    }
+
+    private void AttractNearbyFish()
+    {
+        // Find all fish within attraction radius
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, currentAttractionRadius);
+
+        foreach (Collider2D collider in colliders)
+        {
+            Fish fish = collider.GetComponent<Fish>();
+            if (fish != null && !fish.IsAggressive() && !hasCaughtFish)
+            {
+                // Notify fish about bait (attraction strength based on bait level)
+                fish.DetectBait(transform.position, baitLevel, attractionForce);
             }
         }
     }
@@ -135,8 +191,9 @@ public class FishingHook : MonoBehaviour
                 {
                     // Failed to catch (hook too weak)
                     fish.Escape();
-
                     // We could add feedback here (hook wobble animation, etc)
+                    StartCoroutine(FailedCatch());
+                    StartRetracting();
                 }
             }
         }
@@ -145,9 +202,17 @@ public class FishingHook : MonoBehaviour
         if (collision.CompareTag("AggressiveFish"))
         {
             AggressiveFish aggressiveFish = collision.GetComponent<AggressiveFish>();
-            if (aggressiveFish != null)
-            {
-                aggressiveFish.AttackHook(this);
+            if (aggressiveFish != null && !hasCaughtFish)
+            {// Attempt to catch fish based on hook level vs fish difficulty
+                if (player.HookLevel >= aggressiveFish.MinimumHookLevel)
+                {
+                    // Successfully catch the fish
+                    CatchFish(aggressiveFish);
+                }
+                else
+                {
+                    aggressiveFish.AttackHook(this);
+                }
                 // This might damage the line or cause other effects
             }
         }
@@ -161,7 +226,7 @@ public class FishingHook : MonoBehaviour
         caughtFishObject = fish;
 
         // Adjust retract speed based on fish weight
-        retractSpeed = defaultRetractSpeed / Mathf.Max(0.5f, fish.fishData.weight);
+        retractSpeed = player.GetCurrentReelSpeed() / Mathf.Max(0.5f, fish.fishData.weight);
 
         // Disable fish's own collider and scripts
         fish.GetComponent<Collider2D>().enabled = false;
@@ -184,15 +249,16 @@ public class FishingHook : MonoBehaviour
     // For aggressive fish interactions
     public void DamageLine(float damageAmount)
     {
-        // Implement line damage logic
-        // Could slow down retract speed or cause the fish to escape
-        retractSpeed *= (1 - damageAmount);
+        StartCoroutine(FailedCatch());
 
+        // Could slow down retract speed or cause the fish to escape
+        retractSpeed *= 1 - damageAmount;
         // Visual feedback
         if (fishingLine != null)
         {
             // Make line "wobble" or change color momentarily
             StartCoroutine(LineWobbleEffect());
+            StartRetracting();
         }
     }
 
@@ -202,8 +268,47 @@ public class FishingHook : MonoBehaviour
         float originalWidth = fishingLine.startWidth;
         fishingLine.startWidth = originalWidth * 1.5f;
 
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.3f);
 
         fishingLine.startWidth = originalWidth;
+
+        retractSpeed = player.GetCurrentReelSpeed();
+    }
+
+    IEnumerator FailedCatch()
+    {
+        Debug.Log("Failed to catch fish!");
+        Color originalColor = fishingLine.startColor;
+        float elapsedTime = 0f;
+        float transitionDuration = 0.2f;
+
+        // Fade to red
+        while (elapsedTime < transitionDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            float t = elapsedTime / transitionDuration;
+            Color lerpedColor = Color.Lerp(originalColor, Color.red, t);
+
+            fishingLine.startColor = lerpedColor;
+            fishingLine.endColor = lerpedColor;
+
+            yield return null;
+        }
+
+        yield return new WaitForSeconds(0.3f);
+
+        // Fade back to original
+        elapsedTime = 0f;
+        while (elapsedTime < transitionDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            float t = elapsedTime / transitionDuration;
+            Color lerpedColor = Color.Lerp(Color.red, originalColor, t);
+
+            fishingLine.startColor = lerpedColor;
+            fishingLine.endColor = lerpedColor;
+
+            yield return null;
+        }
     }
 }

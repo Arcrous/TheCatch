@@ -3,9 +3,6 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     [Header("Movement")]
-
-    [Range(1, 10)]
-    [SerializeField] int gameSpeed = 1;
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private float leftBoundary = -8f;  // Left screen boundary
     [SerializeField] private float rightBoundary = 8f;  // Right screen boundary
@@ -16,13 +13,20 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float maxCastPower = 10f;
     [SerializeField] private float castPowerIncreaseRate = 5f;
     [SerializeField] private int hookLevel = 1; // For upgrade system
+    [SerializeField] private float defaultReelSpeed = 5f;
+    [SerializeField] private float reelSpeedUpgradeMultiplier = 0.2f; // 20% increase per level
+    [SerializeField] private int baitLevel = 0; // Added bait level field
+
+    [Header("UI")]
+    [SerializeField] private GameObject pauseUI; // Reference to the fishing UI
 
     // Add property for hook level
     public int HookLevel => hookLevel;
 
+    [Header("Current State")]
     // States
     public bool isFishing = false;
-    private bool isChargingCast = false;
+    public bool isChargingCast = false;
     private float currentCastPower = 0f;
 
     // References
@@ -36,14 +40,10 @@ public class PlayerController : MonoBehaviour
         animator = GetComponent<Animator>();
     }
 
-    void Update()
+    private void Update()
     {
-        //speed up the game
-        Time.timeScale = gameSpeed;
-    }
+        PauseGame(); // Check for pause input
 
-    private void FixedUpdate()
-    {
         // Handle input only if not fishing
         if (!isFishing)
         {
@@ -89,9 +89,6 @@ public class PlayerController : MonoBehaviour
                 currentCastPower += castPowerIncreaseRate * Time.deltaTime;
                 currentCastPower = Mathf.Min(currentCastPower, maxCastPower);
 
-                // Visual feedback for charging (could be UI or animation)
-                animator?.SetFloat("CastPower", currentCastPower / maxCastPower);
-
                 // Release cast
                 if (Input.GetKeyUp(KeyCode.Space))
                 {
@@ -110,6 +107,49 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    // Add this after the existing properties
+    public float GetCurrentCastPower()
+    {
+        return currentCastPower / maxCastPower;
+    }
+
+    public int GetBaitLevel()
+    {
+        return baitLevel;
+    }
+
+    public void UpgradeHook()
+    {
+        hookLevel++;
+        // Update current hook sprite if one exists
+        if (currentHook != null)
+        {
+            int spriteIndex = Mathf.Clamp(hookLevel - 1, 0, currentHook.sprites.Length - 1);
+            currentHook.hookSprite.sprite = currentHook.sprites[spriteIndex];
+        }
+
+        Debug.Log($"Hook upgraded to level {hookLevel}");
+    }
+
+    public void UpgradeBait()
+    {
+        baitLevel++;
+        Debug.Log($"Bait upgraded to level {baitLevel}");
+    }
+
+    public void UpgradeReelSpeed()
+    {
+        // Update reel speed in future hooks
+        defaultReelSpeed *= (1 + reelSpeedUpgradeMultiplier);
+        Debug.Log($"Reel speed upgraded to {defaultReelSpeed}");
+    }
+
+    // Method to pass new reel speed to hooks when created
+    public float GetCurrentReelSpeed()
+    {
+        return defaultReelSpeed;
+    }
+
     private void CastLine()
     {
         isFishing = true;
@@ -121,7 +161,33 @@ public class PlayerController : MonoBehaviour
 
         if (currentHook != null)
         {
+            int spriteIndex = Mathf.Clamp(hookLevel - 1, 0, currentHook.sprites.Length - 1);
+            currentHook.hookSprite.sprite = currentHook.sprites[spriteIndex];
+
             currentHook.Initialize(this, hookAttachPoint, currentCastPower);
+        }
+    }
+
+    void PauseGame()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (Time.timeScale == 1f)
+            {
+                Time.timeScale = 0f; // Pause the game
+                if (pauseUI != null && pauseUI.activeSelf == false)
+                {
+                    pauseUI.SetActive(true); // Show the pause UI
+                }
+            }
+            else
+            {
+                Time.timeScale = 1f; // Resume the game
+                if (pauseUI != null && pauseUI.activeSelf == true)
+                {
+                    pauseUI.SetActive(false); // close the pause UI
+                }
+            }
         }
     }
 

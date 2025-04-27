@@ -23,5 +23,5 @@ MonoBehaviour:
   requiredHookLevel: 1
   fishColor: {r: 1, g: 1, b: 1, a: 1}
   sizeRange: {x: 0.8, y: 1.2}
-  spawnChance: 1
+  spawnChance: 0.6
   depthRange: {x: 1.4, y: -2.75}

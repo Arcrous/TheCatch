@@ -53,11 +53,20 @@ MonoBehaviour:
   defaultRetractSpeed: 5
   maxLineLength: 8.5
   fishingLine: {fileID: 2980574982555553059}
-  hookSprite: {fileID: 0}
+  hookSprite: {fileID: 7826491146169902101}
+  sprites:
+  - {fileID: -27403883, guid: ca4d274a4c5042c43b9abb1f2428c86b, type: 3}
+  - {fileID: 589718711, guid: f11acb506d322a843a0240818e0c56ea, type: 3}
+  - {fileID: 21300000, guid: 006c307b2cd10e3459a954e4ab481be7, type: 3}
   hookAudio: {fileID: 5537672320732220829}
   catchSound: {fileID: 0}
   splashSound: {fileID: 8300000, guid: 7d558480a089e844fbb40d1ccc638bd7, type: 3}
   splashEffect: {fileID: 0}
+  baseAttractionRadius: 3
+  attractionMultiplierPerLevel: 0.2
+  attractionForce: 1
+  baitVisualEffect: {fileID: 0}
+  player: {fileID: 0}
 --- !u!120 &2980574982555553059
 LineRenderer:
   serializedVersion: 2
@@ -157,7 +166,7 @@ LineRenderer:
       atime6: 0
       atime7: 0
       m_Mode: 0
-      m_ColorSpace: -1
+      m_ColorSpace: 0
       m_NumColorKeys: 2
       m_NumAlphaKeys: 2
     numCornerVertices: 0
@@ -402,7 +411,7 @@ SpriteRenderer:
   m_SortingLayerID: -1094283175
   m_SortingLayer: 4
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 006c307b2cd10e3459a954e4ab481be7, type: 3}
+  m_Sprite: {fileID: -27403883, guid: ca4d274a4c5042c43b9abb1f2428c86b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 1
   m_FlipY: 0

@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
+using UnityEngine.UI;
 
 public class FishSpawner : MonoBehaviour
 {
@@ -9,7 +11,7 @@ public class FishSpawner : MonoBehaviour
         public GameObject fishPrefab;
         public FishData fishData;
         public float spawnWeight = 1f;
-    }
+    };
 
     [Header("Spawn Settings")]
     [SerializeField] private List<FishSpawnInfo> regularFish = new List<FishSpawnInfo>();
@@ -25,8 +27,31 @@ public class FishSpawner : MonoBehaviour
     [SerializeField] private Vector2 spawnAreaMax = new Vector2(8f, -5f);
     [SerializeField] private float minDistanceBetweenFish = 3f;
 
+    [Header("Camera")]
+    [SerializeField] private Camera gameCamera;
+    [SerializeField] private float cameraBuffer = 2f;
+    [SerializeField] private bool debugCameraView = true;
+
+    // List of specific spawn points outside the camera view
+    [Header("Spawn Points")]
+    [SerializeField] private List<Transform> spawnPoints = new List<Transform>();
+    [SerializeField] private bool useSpawnPointsOnly = false;
+
+    [Header("UI")]
+    [SerializeField] private TextMeshProUGUI specialFishText; // Reference to UI Text component
+    [SerializeField] private TextMeshProUGUI specialFishTimer;
+    [SerializeField] private float textFadeDuration = 2f; // Duration of text fade
+    [SerializeField] private AudioSource specialFishSound; // Sound to play when special fish spawns
+
+    private GameObject activeSpecialFish; // Track the active special fish
     private float spawnTimer;
     private List<GameObject> activeFish = new List<GameObject>();
+
+    private void Awake()
+    {
+        if (gameCamera == null)
+            gameCamera = Camera.main;
+    }
 
     private void Start()
     {
@@ -39,18 +64,21 @@ public class FishSpawner : MonoBehaviour
         }
     }
 
-    // Add this method to handle fish despawn notification
     public void OnFishDespawned()
     {
-        spawnTimer = 0; // Trigger immediate respawn attempt
+        spawnTimer = 0;
     }
 
     private void FixedUpdate()
     {
-        // Clean up list of destroyed fish
+        // Check if special fish was destroyed
+        if (activeSpecialFish != null && activeSpecialFish == null)
+        {
+            activeSpecialFish = null;
+        }
+
         activeFish.RemoveAll(fish => fish == null);
 
-        // Spawn fish on timer if below max count
         spawnTimer -= Time.deltaTime;
         if (spawnTimer <= 0 && activeFish.Count < maxFishCount)
         {
@@ -60,37 +88,129 @@ public class FishSpawner : MonoBehaviour
             }
             else
             {
-                spawnTimer = 0.5f; // Try again soon if spawn failed
+                spawnTimer = 0.5f;
             }
         }
     }
 
+    // Brute force check if position is visible to camera
+    private bool IsVisibleToCamera(Vector3 worldPos)
+    {
+        if (gameCamera == null) return false;
+
+        Vector3 viewportPoint = gameCamera.WorldToViewportPoint(worldPos);
+
+        // Add a buffer to the viewport to ensure we're well outside
+        float buffer = cameraBuffer * 0.01f; // Convert to viewport space (0-1)
+
+        bool isVisible = (viewportPoint.x > -buffer && viewportPoint.x < 1 + buffer &&
+                          viewportPoint.y > -buffer && viewportPoint.y < 1 + buffer &&
+                          viewportPoint.z > 0);
+
+        return isVisible;
+    }
+
+    private Vector2 GetRandomOffScreenPosition()
+    {
+        // If using spawn points and we have some defined, use those
+        if (useSpawnPointsOnly && spawnPoints.Count > 0)
+        {
+            // Filter out visible spawn points
+            List<Transform> validSpawnPoints = new List<Transform>();
+            foreach (Transform point in spawnPoints)
+            {
+                if (!IsVisibleToCamera(point.position))
+                {
+                    validSpawnPoints.Add(point);
+                }
+            }
+
+            // If we have valid spawn points, use one of them
+            if (validSpawnPoints.Count > 0)
+            {
+                int randomIndex = Random.Range(0, validSpawnPoints.Count);
+                return validSpawnPoints[randomIndex].position;
+            }
+            else
+            {
+                Debug.LogWarning("All spawn points are visible to camera! Trying random position instead.");
+                // Fall through to random position logic
+            }
+        }
+
+        // Initialize variables
+        Vector2 spawnPos = Vector2.zero;
+        bool positionFound = false;
+        int attempts = 0;
+
+        // Brute force approach - try random positions until one is off-screen
+        while (!positionFound && attempts < 100)
+        {
+            attempts++;
+
+            // Generate random position within spawn area
+            spawnPos = new Vector2(
+                Random.Range(spawnAreaMin.x, spawnAreaMax.x),
+                Random.Range(spawnAreaMin.y, spawnAreaMax.y)
+            );
+
+            // Check if position is visible to camera
+            if (!IsVisibleToCamera(spawnPos))
+            {
+                positionFound = true;
+                Debug.Log($"Found off-screen position at {spawnPos} after {attempts} attempts");
+            }
+        }
+
+        if (!positionFound)
+        {
+            Debug.LogWarning("Could not find off-screen position after 100 attempts!");
+
+            // Last resort: pick a point at the far edge of the spawn area
+            float edge = Random.Range(0, 4);
+            switch ((int)edge)
+            {
+                case 0: // Top
+                    spawnPos = new Vector2(Random.Range(spawnAreaMin.x, spawnAreaMax.x), spawnAreaMax.y);
+                    break;
+                case 1: // Right
+                    spawnPos = new Vector2(spawnAreaMax.x, Random.Range(spawnAreaMin.y, spawnAreaMax.y));
+                    break;
+                case 2: // Bottom
+                    spawnPos = new Vector2(Random.Range(spawnAreaMin.x, spawnAreaMax.x), spawnAreaMin.y);
+                    break;
+                case 3: // Left
+                    spawnPos = new Vector2(spawnAreaMin.x, Random.Range(spawnAreaMin.y, spawnAreaMax.y));
+                    break;
+            }
+        }
+
+        return spawnPos;
+    }
+
     private bool SpawnRandomFish()
     {
-        // Determine fish type
+        // Select fish type
         float fishTypeRoll = Random.value;
         List<FishSpawnInfo> selectedList;
 
-        if (fishTypeRoll < specialFishChance)
-        {
+        if (fishTypeRoll < specialFishChance && activeSpecialFish == null)
             selectedList = specialFish;
-        }
         else if (fishTypeRoll < specialFishChance + aggressiveFishChance)
-        {
             selectedList = aggressiveFish;
-        }
         else
-        {
             selectedList = regularFish;
-        }
 
-        // If the selected list is empty, default to regular fish
+        // If we rolled special but one exists, default to regular
+        if (fishTypeRoll < specialFishChance && activeSpecialFish != null)
+            selectedList = regularFish;
+
         if (selectedList.Count == 0)
-        {
             selectedList = regularFish;
-        }
 
-        // Choose a specific fish based on weights
+        if (selectedList.Count == 0) return false; // No fish to spawn
+
+        // Choose specific fish based on weights
         float totalWeight = 0;
         foreach (var fishInfo in selectedList)
         {
@@ -99,8 +219,8 @@ public class FishSpawner : MonoBehaviour
 
         float roll = Random.Range(0, totalWeight);
         float cumulativeWeight = 0;
+        FishSpawnInfo selectedFish = selectedList[0];
 
-        FishSpawnInfo selectedFish = selectedList[0]; // Default
         foreach (var fishInfo in selectedList)
         {
             cumulativeWeight += fishInfo.spawnWeight;
@@ -111,50 +231,55 @@ public class FishSpawner : MonoBehaviour
             }
         }
 
-        // Try multiple spawn positions if needed
-        const int maxAttempts = 10;
-        bool validPosition = false;
-        Vector2 spawnPos = Vector2.zero;
+        // Get a position off screen
+        Vector2 spawnPos = GetRandomOffScreenPosition();
 
-        for (int attempt = 0; attempt < maxAttempts; attempt++)
+        // Verify this position is far enough from other fish
+        bool validPosition = true;
+        foreach (GameObject existingFish in activeFish)
         {
-            spawnPos = new Vector2(
-                Random.Range(spawnAreaMin.x, spawnAreaMax.x),
-                Random.Range(spawnAreaMin.y, spawnAreaMax.y)
-            );
+            if (existingFish == null) continue;
 
-            // Check distance to other fish
-            validPosition = true;
-            foreach (GameObject existingFish in activeFish)
+            float distance = Vector2.Distance(spawnPos, existingFish.transform.position);
+            if (distance < minDistanceBetweenFish)
             {
-                if (existingFish == null) continue;
-
-                float distance = Vector2.Distance(spawnPos, existingFish.transform.position);
-                if (distance < minDistanceBetweenFish)
-                {
-                    validPosition = false;
-                    break;
-                }
-            }
-
-            if (validPosition)
+                validPosition = false;
                 break;
+            }
         }
 
         if (!validPosition)
-            return false; // Couldn't find valid position
+        {
+            Debug.Log("Position was too close to other fish - skipping spawn");
+            return false;
+        }
+
+        // Double-check the position is off-screen
+        if (IsVisibleToCamera(spawnPos))
+        {
+            Debug.LogError($"FAILED: Position {spawnPos} is still visible to camera!");
+            return false; // This prevents spawning in visible areas
+        }
 
         // Spawn the fish
         GameObject newFish = Instantiate(selectedFish.fishPrefab, spawnPos, Quaternion.identity);
 
         // Configure the fish
         Fish fishComponent = newFish.GetComponent<Fish>();
+
+        // Check if this is a special fish
+        if (selectedList == specialFish)
+        {
+            activeSpecialFish = newFish;
+            StartCoroutine(ShowSpecialFishText());
+            StartCoroutine(ShowSpecialFishTimer()); // Start timer coroutine
+        }
+
         if (fishComponent != null && selectedFish.fishData != null)
         {
             fishComponent.fishData = selectedFish.fishData;
             fishComponent.minimumHookLevel = selectedFish.fishData.requiredHookLevel;
 
-            // Random size variation
             float sizeVariation = Random.Range(
                 selectedFish.fishData.sizeRange.x,
                 selectedFish.fishData.sizeRange.y
@@ -162,23 +287,142 @@ public class FishSpawner : MonoBehaviour
             newFish.transform.localScale *= sizeVariation;
         }
 
-        // Add to active fish list
         activeFish.Add(newFish);
         return true;
     }
 
-    // For visualizing spawn area in editor
-    private void OnDrawGizmosSelected()
+    private System.Collections.IEnumerator ShowSpecialFishText()
     {
-        if (!Application.isPlaying) return;
-
-        // Draw minimum distance circles around existing fish
-        Gizmos.color = new Color(1, 1, 0, 0.2f); // Semi-transparent yellow
-        foreach (GameObject fish in activeFish)
+        if (specialFishText != null)
         {
-            if (fish != null)
+            specialFishSound.Play(); // Play sound effect
+            specialFishText.gameObject.SetActive(true);
+
+            specialFishText.text = "Special Fish Appeared!";
+            specialFishText.color = new Color(specialFishText.color.r, specialFishText.color.g, specialFishText.color.b, 1f);
+
+            // Wait briefly before starting fade
+            yield return new WaitForSeconds(2f);
+
+            // Fade out announcement text only
+            float elapsedTime = 0f;
+            Color startColor = specialFishText.color;
+            Color endColor = new Color(startColor.r, startColor.g, startColor.b, 0f);
+
+            while (elapsedTime < textFadeDuration)
             {
-                Gizmos.DrawWireSphere(fish.transform.position, minDistanceBetweenFish);
+                elapsedTime += Time.deltaTime;
+                float normalizedTime = elapsedTime / textFadeDuration;
+                specialFishText.color = Color.Lerp(startColor, endColor, normalizedTime);
+                yield return null;
+            }
+
+            specialFishText.gameObject.SetActive(false);
+        }
+    }
+
+    private System.Collections.IEnumerator ShowSpecialFishTimer()
+    {
+        if (specialFishTimer != null)
+        {
+            specialFishTimer.gameObject.SetActive(true);
+            // Keep updating timer until fish is gone
+            while (activeSpecialFish != null)
+            {
+                Fish fish = activeSpecialFish.GetComponent<Fish>();
+                if (fish != null)
+                {
+                    float remainingTime = fish.maxLifetime - fish.lifetime;
+                    if (remainingTime <= 0)
+                    {
+                        specialFishTimer.gameObject.SetActive(false);
+                        break;
+                    }
+                    specialFishTimer.text = FormatTime(remainingTime);
+                }
+                yield return new WaitForSeconds(0.1f);
+            }
+
+            specialFishTimer.gameObject.SetActive(false);
+        }
+    }
+
+    private string FormatTime(float timeInSeconds)
+    {
+        int minutes = Mathf.FloorToInt(timeInSeconds / 60);
+        int seconds = Mathf.FloorToInt(timeInSeconds % 60);
+        return $"{minutes}:{seconds:00}";
+    }
+
+    private void OnDrawGizmos()
+    {
+        // Draw spawn area
+        Gizmos.color = new Color(0, 1, 0, 0.2f);
+        Vector3 center = new Vector3(
+            (spawnAreaMin.x + spawnAreaMax.x) / 2f,
+            (spawnAreaMin.y + spawnAreaMax.y) / 2f,
+            0
+        );
+        Vector3 size = new Vector3(
+            spawnAreaMax.x - spawnAreaMin.x,
+            spawnAreaMax.y - spawnAreaMin.y,
+            0.1f
+        );
+        Gizmos.DrawCube(center, size);
+
+        // Draw camera view if available
+        if (gameCamera != null && debugCameraView)
+        {
+            float height = 2f * gameCamera.orthographicSize;
+            float width = height * gameCamera.aspect;
+            Vector3 cameraPos = gameCamera.transform.position;
+
+            // Camera frustum
+            Gizmos.color = new Color(1, 0, 0, 0.4f);
+            Gizmos.DrawCube(cameraPos, new Vector3(width, height, 0.1f));
+
+            // Camera buffer zone
+            Gizmos.color = new Color(1, 1, 0, 0.2f);
+            float bufferWidth = width * (1 + cameraBuffer * 0.02f); // Arbitrary conversion
+            float bufferHeight = height * (1 + cameraBuffer * 0.02f);
+            Gizmos.DrawWireCube(cameraPos, new Vector3(bufferWidth, bufferHeight, 0.1f));
+        }
+
+        // Draw spawn points if any
+        if (spawnPoints.Count > 0)
+        {
+            Gizmos.color = Color.blue;
+            foreach (var point in spawnPoints)
+            {
+                if (point != null)
+                {
+                    Gizmos.DrawSphere(point.position, 0.3f);
+                    if (gameCamera != null)
+                    {
+                        bool isVisible = IsVisibleToCamera(point.position);
+                        UnityEditor.Handles.color = isVisible ? Color.red : Color.green;
+                        UnityEditor.Handles.Label(point.position,
+                            $"Spawn Point - Visible: {isVisible}");
+                    }
+                }
+            }
+        }
+
+        // Draw active fish with minimum distance indicator
+        if (Application.isPlaying)
+        {
+            Gizmos.color = new Color(1, 0.5f, 0, 0.2f);
+            foreach (GameObject fish in activeFish)
+            {
+                if (fish != null)
+                {
+                    Gizmos.DrawWireSphere(fish.transform.position, minDistanceBetweenFish);
+                    bool isVisible = IsVisibleToCamera(fish.transform.position);
+
+                    // Color-code based on visibility
+                    Gizmos.color = isVisible ? Color.red : Color.green;
+                    Gizmos.DrawSphere(fish.transform.position, 0.2f);
+                }
             }
         }
     }

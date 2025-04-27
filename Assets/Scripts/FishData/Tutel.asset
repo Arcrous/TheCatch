@@ -24,4 +24,4 @@ MonoBehaviour:
   fishColor: {r: 1, g: 1, b: 1, a: 1}
   sizeRange: {x: 0.8, y: 1.2}
   spawnChance: 0.4
-  depthRange: {x: -5, y: -15}
+  depthRange: {x: 2.74, y: -1}
