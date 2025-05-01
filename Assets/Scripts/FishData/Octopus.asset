@@ -15,7 +15,7 @@ MonoBehaviour:
   fishName: Octopus
   fishSprite: {fileID: 480088941, guid: 25f178f6e2e9a084c9f5db6ac54073de, type: 3}
   value: 45
-  weight: 16
+  weight: 4
   baseSpeed: 3
   skittishness: 2
   isSpecial: 1

@@ -47,6 +47,7 @@ public class InventoryUI : MonoBehaviour
         // Subscribe to events
         inventoryManager.OnInventoryChanged += UpdateInventoryUI;
         inventoryManager.OnMoneyChanged += UpdateMoneyUI;
+        inventoryManager.OnMoneyChanged += UpdateShopUI;
 
         if (fishingShop != null)
             fishingShop.OnShopPurchase += UpdateShopUI;

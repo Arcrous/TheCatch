@@ -5374,7 +5374,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxInventoryCapacity: 4
-  currentMoney: 1000
+  currentMoney: 50
 --- !u!1 &872068229
 GameObject:
   m_ObjectHideFlags: 0
@@ -6984,7 +6984,6 @@ MonoBehaviour:
   minDistanceBetweenFish: 2
   gameCamera: {fileID: 1624930880}
   cameraBuffer: 5
-  debugCameraView: 0
   spawnPoints:
   - {fileID: 412949975}
   - {fileID: 1356022610}

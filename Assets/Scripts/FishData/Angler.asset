@@ -15,7 +15,7 @@ MonoBehaviour:
   fishName: Angler Fish
   fishSprite: {fileID: -1309413951, guid: b7633bf616c578e49b90425e1c08a712, type: 3}
   value: 30
-  weight: 8
+  weight: 3
   baseSpeed: 3
   skittishness: 0.2
   isSpecial: 0

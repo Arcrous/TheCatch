@@ -128,15 +128,22 @@ public class Fish : MonoBehaviour
         }
     }
 
+    protected virtual bool ShouldDespawn()
+    {
+        return lifetime > maxLifetime && !isInCameraView && !isCaught;
+    }
+
+
     protected virtual void FixedUpdate()
     {
         if (isCaught) return;
 
         // Update lifetime and check for despawn
         lifetime += Time.fixedDeltaTime;
-        if (lifetime > maxLifetime && !isInCameraView && !isCaught)
+        if (ShouldDespawn())
         {
             // Notify spawner before destroying
+            Debug.Log($"Fish {fishID} despawned after {lifetime} seconds.");
             FindObjectOfType<FishSpawner>()?.OnFishDespawned();
             Destroy(gameObject);
             return;
@@ -334,6 +341,13 @@ public class Fish : MonoBehaviour
 
         // Disable collider
         GetComponent<Collider2D>().enabled = false;
+
+        // Find and notify the FishSpawner
+        var spawner = FindObjectOfType<FishSpawner>();
+        if (spawner != null)
+        {
+            spawner.OnFishCaught(gameObject);
+        }
     }
 
     public virtual bool IsAggressive()

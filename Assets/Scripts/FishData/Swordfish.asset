@@ -15,7 +15,7 @@ MonoBehaviour:
   fishName: Swordfish
   fishSprite: {fileID: 1104490294, guid: 759acb992a74be140af178bedc62b371, type: 3}
   value: 50
-  weight: 10
+  weight: 4
   baseSpeed: 2.2
   skittishness: 0.3
   isSpecial: 0

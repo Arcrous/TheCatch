@@ -5,7 +5,6 @@ public class FishingHook : MonoBehaviour
 {
     [Header("Movement Settings")]
     [SerializeField] private float descendSpeed = 3f;
-    [SerializeField] private float defaultRetractSpeed = 5f;
     [SerializeField] private float maxLineLength = 15f;
 
     [Header("References")]

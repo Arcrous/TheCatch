@@ -15,7 +15,7 @@ MonoBehaviour:
   fishName: Tutel
   fishSprite: {fileID: 744146489, guid: 58e6df0b67b19ce40a8f851b9b60f6af, type: 3}
   value: 42
-  weight: 5
+  weight: 3
   baseSpeed: 1
   skittishness: 1
   isSpecial: 1

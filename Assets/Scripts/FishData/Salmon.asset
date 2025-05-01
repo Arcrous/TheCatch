@@ -15,7 +15,7 @@ MonoBehaviour:
   fishName: Salmon
   fishSprite: {fileID: -1954198095, guid: 62b87a5b918650345927fbe3257e923c, type: 3}
   value: 15
-  weight: 2
+  weight: 1
   baseSpeed: 4
   skittishness: 1.7
   isSpecial: 0

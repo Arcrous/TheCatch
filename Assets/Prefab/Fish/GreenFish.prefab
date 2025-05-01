@@ -57,6 +57,9 @@ MonoBehaviour:
   maxX: 98.1
   minY: -3.08
   maxY: 5
+  baitAttraction: 1
+  attractionResistance: 0.5
+  baitDetectionChance: 0.7
   lifetime: 0
   maxLifetime: 60
   isInCameraView: 0

@@ -30,7 +30,6 @@ public class FishSpawner : MonoBehaviour
     [Header("Camera")]
     [SerializeField] private Camera gameCamera;
     [SerializeField] private float cameraBuffer = 2f;
-    [SerializeField] private bool debugCameraView = true;
 
     // List of specific spawn points outside the camera view
     [Header("Spawn Points")]
@@ -90,6 +89,17 @@ public class FishSpawner : MonoBehaviour
             {
                 spawnTimer = 0.5f;
             }
+        }
+    }
+
+    public void OnFishCaught(GameObject fish)
+    {
+        activeFish.Remove(fish);
+
+        // If it was a special fish, clear the reference
+        if (fish == activeSpecialFish)
+        {
+            activeSpecialFish = null;
         }
     }
 
@@ -353,5 +363,4 @@ public class FishSpawner : MonoBehaviour
         int seconds = Mathf.FloorToInt(timeInSeconds % 60);
         return $"{minutes}:{seconds:00}";
     }
-
 }

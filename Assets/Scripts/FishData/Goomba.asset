@@ -15,7 +15,7 @@ MonoBehaviour:
   fishName: Goomba
   fishSprite: {fileID: -1260755021, guid: 9b285fceb15603b47b5265726b825a80, type: 3}
   value: 60
-  weight: 15
+  weight: 5
   baseSpeed: 5
   skittishness: 0.1
   isSpecial: 1

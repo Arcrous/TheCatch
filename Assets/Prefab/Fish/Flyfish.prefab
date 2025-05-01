@@ -57,6 +57,9 @@ MonoBehaviour:
   maxX: 98.1
   minY: -2.95
   maxY: 3.35
+  baitAttraction: 1
+  attractionResistance: 0.5
+  baitDetectionChance: 0.7
   lifetime: 0
   maxLifetime: 60
   isInCameraView: 0
@@ -64,7 +67,7 @@ MonoBehaviour:
   specialGlowColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   pulseSpeed: 1.5
   outlineWidth: 1.2
-  glowIntensity: 1.5
+  glowMaterial: {fileID: 2100000, guid: 201a4ebe9ca457b4e8745f0cc1a57e95, type: 2}
 --- !u!212 &5775723549516929761
 SpriteRenderer:
   m_ObjectHideFlags: 0

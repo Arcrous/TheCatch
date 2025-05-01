@@ -6,9 +6,8 @@ public class SpecialFish : Fish
     [SerializeField] private Color specialGlowColor = Color.yellow;
     [SerializeField] private float pulseSpeed = 1.5f;
     [SerializeField] private float outlineWidth = 0.01f;
-    [SerializeField] private float glowIntensity = 1.5f;
 
-    private Material glowMaterial;
+    [SerializeField] private Material glowMaterial;
     private SpriteRenderer mainRenderer;
 
 
@@ -19,13 +18,30 @@ public class SpecialFish : Fish
         mainRenderer = GetComponent<SpriteRenderer>();
 
         // Create material instance
-        glowMaterial = new Material(Shader.Find("Sprites/SpriteGlow"));
-        mainRenderer.material = glowMaterial;
+        if (glowMaterial != null)
+        {
+            glowMaterial = new Material(glowMaterial);
+            mainRenderer.material = glowMaterial;
+
+            // Set initial material properties
+            glowMaterial.SetColor("_Color", Color.white);
+            glowMaterial.SetColor("_GlowColor", specialGlowColor);
+            glowMaterial.SetFloat("_OutlineWidth", outlineWidth);
+        }
+        else
+        {
+            Debug.LogError("Glow shader material not assigned to SpecialFish!");
+        }
 
         // Set initial material properties
         glowMaterial.SetColor("_Color", Color.white);
         glowMaterial.SetColor("_GlowColor", specialGlowColor);
         glowMaterial.SetFloat("_OutlineWidth", outlineWidth);
+    }
+
+    protected override bool ShouldDespawn()
+    {
+        return lifetime > maxLifetime && !isCaught;
     }
 
     protected override void FixedUpdate()

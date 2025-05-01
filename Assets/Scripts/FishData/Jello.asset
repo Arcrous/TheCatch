@@ -15,7 +15,7 @@ MonoBehaviour:
   fishName: Jellyfish
   fishSprite: {fileID: -1517777444, guid: d187c81348748b1459cc4f62cf168739, type: 3}
   value: 25
-  weight: 3
+  weight: 2
   baseSpeed: 1
   skittishness: 0.5
   isSpecial: 0
